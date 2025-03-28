@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/jakartaee-spaced-repetition/css/navbar.css">
+    <title>Flashcards</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .actions form,
+        .actions a {
+            display: inline-block;
+        }
+        .actions button,
+        .actions a {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .actions button:hover,
+        .actions a:hover {
+            background-color: #45a049;
+        }
+        .fällig {
+        color: red;
+        font-weight: bold;
+    }
+    </style>
+</head>
+<body>
+    <div th:replace="navbar :: navbar"></div>
+    <h1>📚 Deine Lernkarten</h1>
+
+    <div style="text-align: center; margin-top: 1rem;">
+        <a href="/jakartaee-spaced-repetition/flashcards?action=add"
+           style="display: inline-block; padding: 0.6rem 1.2rem; margin-bottom: 1rem;
+                  background-color: #3498db; color: white; border-radius: 8px;
+                  text-decoration: none; font-weight: bold; font-size: 1rem;
+                  transition: background-color 0.3s;">
+            ➕ Neue Karte
+        </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 1rem;">
+        <form method="get" action="/jakartaee-spaced-repetition/flashcards">
+            <label for="categoryId" style="font-weight: bold;">Kategorie filtern:</label>
+            <select id="categoryId" name="categoryId" onchange="this.form.submit()">
+                <option value="" th:selected="${selectedCategoryId == null}">Alle Kategorien</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${selectedCategoryId != null} ? ${cat.id} == ${selectedCategoryId} : false">
+                </option>
+            </select>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Frage</th>
+                <th>Antwort</th>
+                <th>Kategorie</th>
+                <th>Nächste Abfrage</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="card : ${cards}">
+                <td th:text="${card.question}">Frage</td>
+                <td th:text="${card.answer}">Antwort</td>
+                <td th:if="${card.category != null}" th:text="${card.category.name}">Kategorie</td>
+                <td th:unless="${card.category != null}">Keine Kategorie</td>
+                <td th:text="${nextReviews[card.id]}"
+                        th:classappend="${nextReviews[card.id]} == 'Jetzt fällig' ? 'fällig' : ''">
+                        Nächste Abfrage
+                    </td>
+                <td class="actions">
+                    <a href="flashcards?action=edit&id=" th:href="'flashcards?action=edit&id=' + ${card.id}">✏️ Bearbeiten</a>
+                    <form th:action="'flashcards'" method="post">
+                        <input type="hidden" name="id" th:value="${card.id}" />
+                        <input type="hidden" name="action" value="delete" />
+                        <button type="submit" onclick="return confirm('Möchtest du diese Karte wirklich löschen?');">🗑️ Löschen</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

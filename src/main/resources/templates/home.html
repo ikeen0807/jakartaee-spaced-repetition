@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/jakartaee-spaced-repetition/css/navbar.css">
+    <title>Willkommen bei Space Repetition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        a {
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌟 Willkommen bei deiner Space Repetition App</h1>
+    <p>Hier kannst du effizient mit Lernkarten lernen, verwalten und deinen Fortschritt steigern.</p>
+
+    <div class="nav-links">
+        <a href="learn">🎓 Lernen starten</a>
+        <a href="flashcards">📚 Alle Karten anzeigen</a>
+        <a href="categories">🗂️ Kategorien</a>
+        <a href="/jakartaee-spaced-repetition/logout">🚪 Logout</a>
+    </div>
+</body>
+</html>

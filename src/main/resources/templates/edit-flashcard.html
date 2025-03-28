@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/jakartaee-spaced-repetition/css/navbar.css">
+    <title>Flashcard bearbeiten</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button[type="submit"] {
+            margin-top: 2rem;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        textarea {
+        width: 100%;
+        padding: 0.8rem;
+        margin-top: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: none;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Flashcard bearbeiten</h1>
+
+        <form th:action="flashcards" method="post">
+            <input type="hidden" name="id" th:value="${card.id}" />
+
+            <label for="question">Frage:</label>
+            <textarea id="question" name="question" rows="2" required oninput="autoResize(this)"th:text="${card.question}"></textarea>
+
+            <label for="answer">Antwort:</label>
+            <textarea id="answer" name="answer" rows="2" required oninput="autoResize(this)" th:text="${card.answer}"></textarea>
+            <div th:if="${not #lists.isEmpty(categories)}">
+            <label for="category">Kategorie:</label>
+            <select id="category" name="categoryId">
+                <option value="" th:selected="${selectedCategoryId == null}">Keine Kategorie</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${cat.id} == ${card.category.id}">
+                </option>
+            </select>
+            </div>
+            <button type="submit" name="action" value="update">💾 Speichern</button>
+        </form>
+
+        <a class="back-link" href="/jakartaee-spaced-repetition/flashcards">🔙 Zurück zur Übersicht</a>
+    </div>
+    <script>
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("textarea").forEach(autoResize);
+        });
+    </script>
+</body>
+</html>

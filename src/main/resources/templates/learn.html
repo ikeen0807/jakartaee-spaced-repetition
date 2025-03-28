@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/jakartaee-spaced-repetition/css/navbar.css">
+    <title>Lernmodus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+        }
+
+        .question,
+        .answer {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .button-toggle {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .button-toggle:hover {
+            background-color: #45a049;
+        }
+
+        form button {
+            margin: 1rem 0.5rem;
+            padding: 0.6rem 1.4rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button[name="correct"][value="true"] {
+            background-color: #808080;
+            color: white;
+        }
+
+        form button[name="correct"][value="false"] {
+            background-color: #808080;
+            color: white;
+        }
+
+        form button:hover {
+            opacity: 0.9;
+        }
+
+        .no-cards {
+            font-size: 1.2rem;
+            color: #444;
+            margin-top: 2rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .category-filter {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-filter select {
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+<div class="container">
+    <h1>🎓 Lernmodus</h1>
+
+    <div class="category-filter" th:if="${categories != null}">
+        <form method="get" action="/jakartaee-spaced-repetition/learn" style="margin-bottom: 1rem;">
+            <label for="categoryId" style="font-weight: bold;">Lernkategorie wählen:</label>
+            <select id="categoryId" name="categoryId" onchange="this.form.submit()">
+                <option value="" th:selected="${selectedCategoryId == null}">-- Kategorie wählen --</option>
+                <option value="none" th:selected="${selectedCategoryId == -1}">❌ Ohne Kategorie</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${selectedCategoryId != null && selectedCategoryId != -1} ? ${cat.id} == ${selectedCategoryId} : false">
+                </option>
+            </select>
+        </form>
+    </div>
+
+    <div style="font-weight: bold; margin-bottom: 1rem;">
+        Karte <span th:text="${current}"></span> von <span th:text="${total}"></span>
+    </div>
+
+    <div th:if="${card != null}">
+        <div class="question">
+            <strong>Frage:</strong><br>
+            <span th:text="${card.question}">Frage</span>
+        </div>
+
+        <hr>
+
+        <div class="answer">
+            <strong>Antwort:</strong><br>
+            <button class="button-toggle" type="button" onclick="toggleAnswer()">Antwort anzeigen 🔽</button>
+            <p id="answer" th:text="${card.answer}" style="display: none; margin-top: 1rem;">Antwort</p>
+        </div>
+
+        <form method="post">
+            <input type="hidden" name="id" th:value="${card.id}" />
+            <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" />
+
+            <div th:if="${!onlyOneCard}">
+                <button type="submit" name="rating" value="again" style="background-color: #e74c3c; color: white;">
+                    🔁 Again
+                </button>
+            </div>
+            <button type="submit" name="rating" value="hard" style="background-color: #e67e22; color: white;">
+                😬 Hard
+            </button>
+            <button type="submit" name="rating" value="good" style="background-color: #2ecc71; color: white;">
+                👍 Good
+            </button>
+            <button type="submit" name="rating" value="easy" style="background-color: #3498db; color: white;">
+                😎 Easy
+            </button>
+        </form>
+    </div>
+
+    <div th:if="${card == null}">
+        <p class="no-cards">✅ Du hast aktuell keine fälligen Karten.</p>
+        <a class="back-link" href="/jakartaee-spaced-repetition/flashcards">🔙 Zurück zur Übersicht</a>
+    </div>
+</div>
+
+<script>
+    function toggleAnswer() {
+        const answer = document.getElementById('answer');
+        const button = event.target;
+        if (answer.style.display === 'none') {
+            answer.style.display = 'block';
+            button.textContent = 'Antwort verbergen 🔼';
+        } else {
+            answer.style.display = 'none';
+            button.textContent = 'Antwort anzeigen 🔽';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kategorien verwalten</title>
+    <link rel="stylesheet" href="/jakartaee-spaced-repetition/css/navbar.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 2rem;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.8rem 1.2rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            margin-bottom: 0.5rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem; 
+        }
+        .delete-form {
+    margin: 0;
+}
+
+        .delete-form button {
+    background-color: #e74c3c;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+        .delete-form button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="container">
+    <h1>🗂️ Deine Kategorien</h1>
+
+    <form method="post" action="/jakartaee-spaced-repetition/categories">
+        <input type="text" name="name" placeholder="Neue Kategorie hinzufügen" required>
+        <button type="submit">➕ Hinzufügen</button>
+    </form>
+
+    <ul>
+        <li th:each="category : ${categories}">
+            <span th:text="${category.name}">Beispielkategorie</span>
+            <form action="/jakartaee-spaced-repetition/categories/delete" method="post" class="delete-form">
+                <input type="hidden" name="id" th:value="${category.id}" />
+                <button type="submit" onclick="return confirm('Möchtest du diese Kategorie und alle zugehörigen Karten wirklich löschen?');">🗑️ Löschen</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
