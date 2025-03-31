@@ -4,8 +4,8 @@
     <jdbc-connection-pool name="PostgresPool"
                           datasource-classname="org.postgresql.ds.PGSimpleDataSource"
                           res-type="javax.sql.DataSource">
-        <property name="user" value="postgres"/>
-        <property name="password" value="dbkiller"/>
+        <property name="user" value="your_username"/>
+        <property name="password" value="your_password"/>
         <property name="databaseName" value="flashcards"/>
         <property name="serverName" value="localhost"/>
         <property name="portNumber" value="5432"/>
